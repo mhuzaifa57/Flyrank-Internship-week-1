@@ -13,62 +13,36 @@
     {
       "cell_type": "code",
       "source": [
-        "# Watch it work — each of the 5 steps prints live as it runs (~1 minute total).\n",
-        "!{sys.executable} scripts/run_all.py\n"
+        "import json\n",
+        "res = json.load(open(\"outputs/model_results.json\"))\n",
+        "\n",
+        "base = res[\"baseline\"][\"baseline_precision_at_50\"]\n",
+        "rf   = res[\"models\"][\"random_forest\"][\"precision_at_50\"]\n",
+        "\n",
+        "print(f\"Hand-written rule  Precision@50: {base:.3f}   (~{round(base*50)} of the top 50 right)\")\n",
+        "print(f\"Random forest      Precision@50: {rf:.3f}   (~{round(rf*50)} of the top 50 right)\")\n",
+        "print(f\"\\nThe learned model roughly {rf/base:.1f}x the rule on this metric.\")\n",
+        "print(\"Validation split used:\", res[\"split_strategy\"], \"(pages from a client are never in both train and test)\")\n",
+        ""
       ],
       "metadata": {
-        "id": "MiEbN8onTLKv",
-        "outputId": "1dd57052-781e-4c16-c9bb-eb3099c7c1c4",
+        "id": "UQ-g4b2lTgbx",
+        "outputId": "2865fad3-2f66-4165-e21a-fdb8c69ad0f4",
         "colab": {
           "base_uri": "https://localhost:8080/"
         }
       },
-      "execution_count": 2,
+      "execution_count": 3,
       "outputs": [
         {
           "output_type": "stream",
           "name": "stdout",
           "text": [
+            "Hand-written rule  Precision@50: 0.240   (~12 of the top 50 right)\n",
+            "Random forest      Precision@50: 0.740   (~37 of the top 50 right)\n",
             "\n",
-            "======================================================================\n",
-            "▶ Step 1/5 — Prepare features — clean the data, build the feature vector, define the label\n",
-            "======================================================================\n",
-            "Prepared 30,000 rows from 30,000 raw rows\n",
-            "Wrote /content/flyrank-ml-internship-starter/data/processed/refresh_feature_vector.csv\n",
-            "\n",
-            "======================================================================\n",
-            "▶ Step 2/5 — Baseline — a transparent hand-written rule to beat\n",
-            "======================================================================\n",
-            "Wrote baseline queue: /content/flyrank-ml-internship-starter/data/processed/baseline_refresh_queue.csv\n",
-            "Top-50 declining rate (full data, not the evaluated holdout Precision@50): 0.340\n",
-            "\n",
-            "======================================================================\n",
-            "▶ Step 3/5 — Train — logistic regression, decision tree, random forest (client-holdout split)\n",
-            "======================================================================\n",
-            "Trained 3 models on 30,000 rows\n",
-            "Split strategy: client_holdout\n",
-            "Best model: random_forest\n",
-            "Wrote predictions: /content/flyrank-ml-internship-starter/data/processed/model_predictions.csv\n",
-            "Wrote model results: /content/flyrank-ml-internship-starter/outputs/model_results.json\n",
-            "\n",
-            "======================================================================\n",
-            "▶ Step 4/5 — Evaluate — ranked refresh queue, charts, and the Markdown report\n",
-            "======================================================================\n",
-            "Wrote final refresh queue: /content/flyrank-ml-internship-starter/outputs/refresh_queue.csv\n",
-            "Wrote model report: /content/flyrank-ml-internship-starter/outputs/model_report.md\n",
-            "Wrote charts in: /content/flyrank-ml-internship-starter/outputs/charts\n",
-            "\n",
-            "======================================================================\n",
-            "▶ Step 5/5 — Report — a shareable PDF summary\n",
-            "======================================================================\n",
-            "Wrote PDF report: /content/flyrank-ml-internship-starter/outputs/flyrank_refresh_model_results.pdf\n",
-            "\n",
-            "Pipeline complete\n",
-            "Rows scored: 30,000\n",
-            "Best model: random_forest\n",
-            "Queue: outputs/refresh_queue.csv\n",
-            "Report: outputs/model_report.md\n",
-            "PDF: /content/flyrank-ml-internship-starter/outputs/flyrank_refresh_model_results.pdf\n"
+            "The learned model roughly 3.1x the rule on this metric.\n",
+            "Validation split used: client_holdout (pages from a client are never in both train and test)\n"
           ]
         }
       ]

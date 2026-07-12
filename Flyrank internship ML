@@ -13,31 +13,33 @@
     {
       "cell_type": "code",
       "source": [
-        "wc = df.groupby(\"trend_direction\")[\"word_count\"].median()\n",
-        "print(wc.round(0).to_string())\n",
-        "print(\"\\n'down' vs 'up' pages have almost the same median word count -> length is not the lever.\")"
+        "# Your turn — Discovery A restricted to pages with impressions_90d > 0\n",
+        "seen = df[df[\"impressions_90d\"] > 0]\n",
+        "\n",
+        "corr_all  = df[\"search_volume\"].corr(df[\"impressions_90d\"])\n",
+        "corr_seen = seen[\"search_volume\"].corr(seen[\"impressions_90d\"])\n",
+        "\n",
+        "print(f\"Correlation, all pages:              {corr_all:.3f}   (n={len(df)})\")\n",
+        "print(f\"Correlation, impressions_90d > 0:    {corr_seen:.3f}   (n={len(seen)})\")\n",
+        "print(f\"\\nDropped {len(df) - len(seen)} pages with zero impressions.\")"
       ],
       "metadata": {
-        "id": "juTHX7h4VERH",
-        "outputId": "10aff935-65ec-45b7-821d-95ce5e8f2165",
+        "id": "QYQt_3kBWOZU",
+        "outputId": "6bd63fe3-5c46-45df-a5d3-e3c4769b1b90",
         "colab": {
           "base_uri": "https://localhost:8080/"
         }
       },
-      "execution_count": 8,
+      "execution_count": 9,
       "outputs": [
         {
           "output_type": "stream",
           "name": "stdout",
           "text": [
-            "trend_direction\n",
-            "down      2909.0\n",
-            "flat      2698.0\n",
-            "new       2239.0\n",
-            "stable    2912.0\n",
-            "up        2848.0\n",
+            "Correlation, all pages:              0.001   (n=30000)\n",
+            "Correlation, impressions_90d > 0:    0.001   (n=30000)\n",
             "\n",
-            "'down' vs 'up' pages have almost the same median word count -> length is not the lever.\n"
+            "Dropped 0 pages with zero impressions.\n"
           ]
         }
       ]

@@ -13,42 +13,62 @@
     {
       "cell_type": "code",
       "source": [
-        "import os, sys, subprocess\n",
-        "\n",
-        "IN_COLAB = \"google.colab\" in sys.modules\n",
-        "REPO_URL = \"https://github.com/flyrank-bih/flyrank-ml-internship-starter\"\n",
-        "REPO_DIR = \"flyrank-ml-internship-starter\"\n",
-        "\n",
-        "if IN_COLAB:\n",
-        "    if not os.path.isdir(REPO_DIR):\n",
-        "        subprocess.run([\"git\", \"clone\", \"--depth\", \"1\", REPO_URL, REPO_DIR], check=True)\n",
-        "    os.chdir(REPO_DIR)\n",
-        "    subprocess.run([sys.executable, \"-m\", \"pip\", \"install\", \"-q\", \"-r\", \"requirements.txt\"], check=True)\n",
-        "else:\n",
-        "    # find the repo root from wherever this kernel started\n",
-        "    while not os.path.isdir(\"data/raw\") and os.getcwd() != \"/\":\n",
-        "        os.chdir(\"..\")\n",
-        "\n",
-        "print(\"Working dir:\", os.getcwd())\n",
-        "assert os.path.exists(\"data/raw/content_refresh_anonymized.csv\"), \"starter CSV not found — are you at the repo root?\"\n",
-        "print(\"Starter data found. You're ready.\")\n",
-        ""
+        "# Watch it work — each of the 5 steps prints live as it runs (~1 minute total).\n",
+        "!{sys.executable} scripts/run_all.py\n"
       ],
       "metadata": {
-        "id": "4dWO2W1TScnk",
-        "outputId": "4e397894-ba35-4399-d5cf-6f6e979f8a3d",
+        "id": "MiEbN8onTLKv",
+        "outputId": "1dd57052-781e-4c16-c9bb-eb3099c7c1c4",
         "colab": {
           "base_uri": "https://localhost:8080/"
         }
       },
-      "execution_count": 1,
+      "execution_count": 2,
       "outputs": [
         {
           "output_type": "stream",
           "name": "stdout",
           "text": [
-            "Working dir: /content/flyrank-ml-internship-starter\n",
-            "Starter data found. You're ready.\n"
+            "\n",
+            "======================================================================\n",
+            "▶ Step 1/5 — Prepare features — clean the data, build the feature vector, define the label\n",
+            "======================================================================\n",
+            "Prepared 30,000 rows from 30,000 raw rows\n",
+            "Wrote /content/flyrank-ml-internship-starter/data/processed/refresh_feature_vector.csv\n",
+            "\n",
+            "======================================================================\n",
+            "▶ Step 2/5 — Baseline — a transparent hand-written rule to beat\n",
+            "======================================================================\n",
+            "Wrote baseline queue: /content/flyrank-ml-internship-starter/data/processed/baseline_refresh_queue.csv\n",
+            "Top-50 declining rate (full data, not the evaluated holdout Precision@50): 0.340\n",
+            "\n",
+            "======================================================================\n",
+            "▶ Step 3/5 — Train — logistic regression, decision tree, random forest (client-holdout split)\n",
+            "======================================================================\n",
+            "Trained 3 models on 30,000 rows\n",
+            "Split strategy: client_holdout\n",
+            "Best model: random_forest\n",
+            "Wrote predictions: /content/flyrank-ml-internship-starter/data/processed/model_predictions.csv\n",
+            "Wrote model results: /content/flyrank-ml-internship-starter/outputs/model_results.json\n",
+            "\n",
+            "======================================================================\n",
+            "▶ Step 4/5 — Evaluate — ranked refresh queue, charts, and the Markdown report\n",
+            "======================================================================\n",
+            "Wrote final refresh queue: /content/flyrank-ml-internship-starter/outputs/refresh_queue.csv\n",
+            "Wrote model report: /content/flyrank-ml-internship-starter/outputs/model_report.md\n",
+            "Wrote charts in: /content/flyrank-ml-internship-starter/outputs/charts\n",
+            "\n",
+            "======================================================================\n",
+            "▶ Step 5/5 — Report — a shareable PDF summary\n",
+            "======================================================================\n",
+            "Wrote PDF report: /content/flyrank-ml-internship-starter/outputs/flyrank_refresh_model_results.pdf\n",
+            "\n",
+            "Pipeline complete\n",
+            "Rows scored: 30,000\n",
+            "Best model: random_forest\n",
+            "Queue: outputs/refresh_queue.csv\n",
+            "Report: outputs/model_report.md\n",
+            "PDF: /content/flyrank-ml-internship-starter/outputs/flyrank_refresh_model_results.pdf\n"
           ]
         }
       ]

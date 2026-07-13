@@ -1,0 +1,72 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/mhuzaifa57/Flyrank-Internship-week-1/blob/main/Flyrank%20internship%20ML%20notebook%202\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import os, sys, subprocess\n",
+        "\n",
+        "IN_COLAB = \"google.colab\" in sys.modules\n",
+        "REPO_URL = \"https://github.com/flyrank-bih/flyrank-ml-internship-starter\"\n",
+        "REPO_DIR = \"flyrank-ml-internship-starter\"\n",
+        "\n",
+        "if IN_COLAB:\n",
+        "    if not os.path.isdir(REPO_DIR):\n",
+        "        subprocess.run([\"git\", \"clone\", \"--depth\", \"1\", REPO_URL, REPO_DIR], check=True)\n",
+        "    os.chdir(REPO_DIR)\n",
+        "    subprocess.run([sys.executable, \"-m\", \"pip\", \"install\", \"-q\", \"-r\", \"requirements.txt\"], check=True)\n",
+        "else:\n",
+        "    # find the repo root from wherever this kernel started\n",
+        "    while not os.path.isdir(\"data/raw\") and os.getcwd() != \"/\":\n",
+        "        os.chdir(\"..\")\n",
+        "\n",
+        "import pandas as pd, numpy as np\n",
+        "df = pd.read_csv(\"data/raw/content_refresh_anonymized.csv\")\n",
+        "\n",
+        "# The label: a page is 'declining' when its recent trend is down. Simple, honest starter label.\n",
+        "df[\"is_declining_label\"] = df[\"trend_direction\"].str.lower().eq(\"down\").astype(int)\n",
+        "print(df.shape[0], \"pages |  declining rate:\", round(df[\"is_declining_label\"].mean(), 3))\n",
+        ""
+      ],
+      "metadata": {
+        "id": "Av-k5u53aH_Y",
+        "outputId": "1f57a97c-7d7a-448c-81c2-69d5e53716ba",
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        }
+      },
+      "execution_count": 1,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "30000 pages |  declining rate: 0.542\n"
+          ]
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "name": "Welcome to Colab",
+      "provenance": [],
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}

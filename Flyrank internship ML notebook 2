@@ -13,28 +13,37 @@
     {
       "cell_type": "code",
       "source": [
-        "tree_score = tree.predict_proba(X)[:, 1]\n",
-        "for k in (20, 50):\n",
-        "    hr = precision_at_k(df[\"hand_rule_score\"], y, k)\n",
-        "    tr = precision_at_k(tree_score, y, k)\n",
-        "    print(f\"Precision@{k}:  hand rule {hr:.3f}   vs   tree {tr:.3f}\")\n",
+        "X_leaky = df[features + [\"trend_pct\"]].replace([np.inf, -np.inf], np.nan).fillna(0)\n",
+        "leaky = DecisionTreeClassifier(max_depth=2, class_weight=\"balanced\", random_state=42).fit(X_leaky, y)\n",
+        "print(f\"'Leaky' tree Precision@50: {precision_at_k(leaky.predict_proba(X_leaky)[:,1], y, 50):.3f}  <- looks amazing\")\n",
+        "print(export_text(leaky, feature_names=features + [\"trend_pct\"]))\n",
         ""
       ],
       "metadata": {
-        "id": "ffyml1YSblZt",
-        "outputId": "3f9114c6-d535-46e8-cf1e-d0e55133233e",
+        "id": "OAErrdZ3b2Z8",
+        "outputId": "f1efc584-1ee9-49fa-9501-41b07fee337e",
         "colab": {
           "base_uri": "https://localhost:8080/"
         }
       },
-      "execution_count": 5,
+      "execution_count": 6,
       "outputs": [
         {
           "output_type": "stream",
           "name": "stdout",
           "text": [
-            "Precision@20:  hand rule 0.900   vs   tree 0.550\n",
-            "Precision@50:  hand rule 0.680   vs   tree 0.600\n"
+            "'Leaky' tree Precision@50: 1.000  <- looks amazing\n",
+            "|--- trend_pct <= -20.05\n",
+            "|   |--- word_count <= 212.00\n",
+            "|   |   |--- class: 1\n",
+            "|   |--- word_count >  212.00\n",
+            "|   |   |--- class: 1\n",
+            "|--- trend_pct >  -20.05\n",
+            "|   |--- trend_pct <= -19.95\n",
+            "|   |   |--- class: 0\n",
+            "|   |--- trend_pct >  -19.95\n",
+            "|   |   |--- class: 0\n",
+            "\n"
           ]
         }
       ]

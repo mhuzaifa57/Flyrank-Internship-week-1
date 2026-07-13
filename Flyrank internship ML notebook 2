@@ -13,42 +13,28 @@
     {
       "cell_type": "code",
       "source": [
-        "from sklearn.tree import DecisionTreeClassifier, export_text\n",
-        "\n",
-        "features = [\"content_age_days\", \"days_since_last_update\", \"impressions_90d\",\n",
-        "            \"avg_position\", \"ctr\", \"word_count\"]\n",
-        "X = df[features].replace([np.inf, -np.inf], np.nan).fillna(0)\n",
-        "\n",
-        "tree = DecisionTreeClassifier(max_depth=2, class_weight=\"balanced\", random_state=42)\n",
-        "tree.fit(X, y)\n",
-        "\n",
-        "print(export_text(tree, feature_names=features))\n",
+        "tree_score = tree.predict_proba(X)[:, 1]\n",
+        "for k in (20, 50):\n",
+        "    hr = precision_at_k(df[\"hand_rule_score\"], y, k)\n",
+        "    tr = precision_at_k(tree_score, y, k)\n",
+        "    print(f\"Precision@{k}:  hand rule {hr:.3f}   vs   tree {tr:.3f}\")\n",
         ""
       ],
       "metadata": {
-        "id": "z5oPtHQVbWPC",
-        "outputId": "e378f05d-351f-4bbe-8ad8-d143c204b6d5",
+        "id": "ffyml1YSblZt",
+        "outputId": "3f9114c6-d535-46e8-cf1e-d0e55133233e",
         "colab": {
           "base_uri": "https://localhost:8080/"
         }
       },
-      "execution_count": 4,
+      "execution_count": 5,
       "outputs": [
         {
           "output_type": "stream",
           "name": "stdout",
           "text": [
-            "|--- impressions_90d <= 5.50\n",
-            "|   |--- avg_position <= 0.75\n",
-            "|   |   |--- class: 0\n",
-            "|   |--- avg_position >  0.75\n",
-            "|   |   |--- class: 0\n",
-            "|--- impressions_90d >  5.50\n",
-            "|   |--- content_age_days <= 312.50\n",
-            "|   |   |--- class: 1\n",
-            "|   |--- content_age_days >  312.50\n",
-            "|   |   |--- class: 0\n",
-            "\n"
+            "Precision@20:  hand rule 0.900   vs   tree 0.550\n",
+            "Precision@50:  hand rule 0.680   vs   tree 0.600\n"
           ]
         }
       ]
